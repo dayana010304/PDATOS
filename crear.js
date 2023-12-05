@@ -1,3 +1,5 @@
+const socket = new WebSocket('ws://localhost:8080/poli-rh');
+
 function crearObjetoJSON() {
     // Obtener valores del formulario
     var documento = document.getElementById("documento").value;
@@ -19,7 +21,7 @@ function crearObjetoJSON() {
             "emplPrimerNombre": primerNombre,
             "emplSegundoNombre": segundoNombre,
             "emplEmail": email,
-            "emplFechaNacimiento": fechaNacimiento,
+            "emplFechaNac": fechaNacimiento,
             "emplSueldo": sueldo,
             "emplComision": comision,
             "emplCargoId": cargo,
@@ -30,4 +32,25 @@ function crearObjetoJSON() {
 
     // Mostrar en consola el JSON
     console.log(objetoJSON);
+
+    socket.send(JSON.stringify(objetoJSON));
 }
+
+socket.addEventListener('message', (event) => {
+    const message = JSON.parse(event.data);
+    console.log('Mensaje recibido:', message);
+    alert(message.datos);
+
+});
+
+socket.addEventListener('open', (event) => {
+    console.log('Conexión establecida con el servidor WebSocket');
+});
+
+socket.addEventListener('close', (event) => {
+    console.log('Conexión cerrada con el servidor WebSocket');
+});
+
+socket.addEventListener('error', (event) => {
+    console.error('Error en la conexión WebSocket:', event);
+});
